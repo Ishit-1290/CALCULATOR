@@ -1,8 +1,14 @@
 #include "App.h"
 
+//Implementing Main Function
+wxIMPLEMENT_APP(App);
+
+//Constructor
 App::App() {
 
 }
+
+//Destructor
 App::~App() {
 
 }
