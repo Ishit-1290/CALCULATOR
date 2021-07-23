@@ -2,8 +2,9 @@
 
 #include "wx\wx.h"
 
-// Area for writing expressions
+
 #define CALCAREA 10001
+#define EQUALS 10109
 
 // Main window for the app.
 class MainWindow : public wxFrame

@@ -5,7 +5,10 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Calculator") {
 	baseSizer = new wxBoxSizer(wxVERTICAL); //Vertical Sizer
 	calcArea = new wxTextCtrl(this, CALCAREA, "", wxPoint(0, 0), wxSize(100, 40));
 	btnGrid = new wxGridSizer(3, 3, wxSize(8,8));
-	wxBoxSizer* horizontalSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer* lastRow = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer* lastColumn = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer* gridlastColumn = new wxBoxSizer(wxHORIZONTAL);
+
 	// Making the Button Grid from 1 to 9
 	for (int i = 0, numbers = 7; i < 3; i++) {	
 
@@ -18,17 +21,27 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Calculator") {
 		else
 			numbers = 1;
 	}
-	// Creating the last row
-	horizontalSizer->Add(new wxButton(this, 1000, "0", wxPoint(0, 0), wxSize(78, 58)),0, wxFIXED_MINSIZE | wxLEFT | wxTOP, 8);
-	horizontalSizer->Add(new wxButton(this, 1000, "=", wxPoint(0, 0), wxSize(164, 58)), 0, wxFIXED_MINSIZE | wxLEFT | wxTOP, 8);
 	
+	gridlastColumn->Add(btnGrid, 0, wxFIXED_MINSIZE | wxALL, 8);
+	
+	//
+	lastColumn->Add(new wxButton(this, 102, "÷", wxPoint(0, 0), wxSize(78, 58)), 0, wxFIXED_MINSIZE | wxTOP, 8);
+	lastColumn->Add(new wxButton(this, 103, "×", wxPoint(0, 0), wxSize(78, 58)), 0, wxFIXED_MINSIZE | wxTOP, 8);
+	lastColumn->Add(new wxButton(this, 104, "-", wxPoint(0, 0), wxSize(78, 58)), 0, wxFIXED_MINSIZE | wxTOP, 8);
+
+	gridlastColumn->Add(lastColumn, 0, wxFIXED_MINSIZE);
+	
+	// Creating the last row
+	lastRow->Add(new wxButton(this, 1000, "0", wxPoint(0, 0), wxSize(78, 58)), 0, wxFIXED_MINSIZE | wxLEFT | wxTOP, 8);
+	lastRow->Add(new wxButton(this, EQUALS, "=", wxPoint(0, 0), wxSize(164, 58)), 0, wxFIXED_MINSIZE | wxLEFT | wxTOP, 8);
+	lastRow->Add(new wxButton(this, 105, "+", wxPoint(0, 0), wxSize(78, 58)), 0, wxFIXED_MINSIZE | wxLEFT | wxTOP, 8);
+
+
 
 	// Allowing calcArea to expand to full width
 	baseSizer->Add(calcArea, 0, wxEXPAND | wxALL, 8);
-	// Adding the Button Grid with fixed size
-	baseSizer->Add(btnGrid, 0, wxFIXED_MINSIZE | wxLEFT, 8);
-	// Adding the last row
-	baseSizer->Add(horizontalSizer, 0, wxSHAPED);
+	baseSizer->Add(gridlastColumn, 0, wxFIXED_MINSIZE);
+	baseSizer->Add(lastRow, 0, wxFIXED_MINSIZE | wxALL, 8);
 	
 	
 	
