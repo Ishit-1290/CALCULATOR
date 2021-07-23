@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Logic.cpp" />
     <ClCompile Include="src\MainWindow.cpp" />
     <ClCompile Include="src\App.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Logic.h" />
     <ClInclude Include="src\MainWindow.h" />
     <ClInclude Include="src\App.h" />
   </ItemGroup>
