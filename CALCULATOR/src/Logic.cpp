@@ -9,8 +9,7 @@ Logic::~Logic() {
 
 }
 
-int Logic::Calculate(std::string equation) { // (5+3)/2+3
-	string equation = "5 + 4/(8/2) + ((10/5)+3) + (8*2)+ (8*(4 *2))";
+int Logic::Calculate(std::string equation) {
 	for (int i = 0; i < equation.length(); i++) {
 		if (equation[i] == ')') {
 			int j;
