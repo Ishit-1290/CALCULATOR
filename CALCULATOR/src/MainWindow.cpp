@@ -86,7 +86,10 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Calculator") {
 			btns[i][j]->SetForegroundColour(wxColour(255, 255, 255, 255));
 		}
 	}
+	calcArea->SetBackgroundColour(wxColour(41, 40, 41, 255));
+	calcArea->SetFont(wxFont(25, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
 	
+	calcArea->SetForegroundColour(wxColour(255, 255, 255, 255));
 	this->SetSizer(baseSizer);
 	this->SetMinSize(wxSize(375, 435));
 
