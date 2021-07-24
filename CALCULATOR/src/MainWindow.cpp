@@ -74,7 +74,19 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Calculator") {
 	baseSizer->Add(gridlastColumn, 0, wxFIXED_MINSIZE);
 	baseSizer->Add(lastRow, 0, wxFIXED_MINSIZE);
 
-
+	//Stylesheet
+	this->SetBackgroundColour(wxColour(41, 40, 41, 255));
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 4; j++) {
+			if (i == 4 && j == 3) {
+				break;
+			}
+			btns[i][j]->SetBackgroundColour(wxColour(41, 40, 41, 255));
+			btns[i][j]->SetFont(wxFont(wxFONTSIZE_MEDIUM, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+			btns[i][j]->SetForegroundColour(wxColour(255, 255, 255, 255));
+		}
+	}
+	
 	this->SetSizer(baseSizer);
 	this->SetMinSize(wxSize(375, 435));
 
