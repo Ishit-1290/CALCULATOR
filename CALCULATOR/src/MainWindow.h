@@ -18,7 +18,7 @@ private:
 	wxGridSizer* btnGrid = nullptr;
 
 	//Widgets
-
+	wxButton*** btns = nullptr;
 	wxTextCtrl* calcArea = nullptr;
 };
 
