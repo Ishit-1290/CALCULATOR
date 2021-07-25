@@ -20,5 +20,8 @@ private:
 	//Widgets
 	wxButton*** btns = nullptr;
 	wxTextCtrl* calcArea = nullptr;
+	void OnButtonClicked(wxCommandEvent& evt);
+	void OnButtonEquals(wxCommandEvent& evt);
+	void DeleteWhitespace();
 };
 
