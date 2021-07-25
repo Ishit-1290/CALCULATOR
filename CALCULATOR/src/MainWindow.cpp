@@ -166,7 +166,25 @@ void MainWindow::OnButtonClicked(wxCommandEvent& evt) {
 		}
 	}
 	else if (evt.GetId() == 4) {
-
+		std::string equation = (std::string)calcArea->GetValue();
+		if (equation[equation.length() - 1] >= '0' && equation[equation.length() - 1] <= '9') {
+			if (equation[equation.length() - 2] >= '0' && equation[equation.length() - 2] <= '9') {
+				std::string value = "";
+				for (int i = 0; i < equation.length()-2; i++) {
+					value = value + equation[i];
+				}
+				value = value + "." + equation[equation.length() - 2] + equation[equation.length() - 1];
+				calcArea->SetValue(value);
+			}
+			else {
+				std::string value = "";
+				for (int i = 0; i < equation.length() - 1; i++) {
+					value = value + equation[i];
+				}
+				value = value + "." + '0' + equation[equation.length() - 1];
+				calcArea->SetValue(value);
+			}
+		}
 	}
 	this->DeleteWhitespace();
 	evt.Skip();
