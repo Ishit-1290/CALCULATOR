@@ -10,6 +10,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Calculator") {
 		}
 		btns[i] = new wxButton * [4];
 	}
+	calculation = new Logic();
 	
 	baseSizer = new wxBoxSizer(wxVERTICAL); //Vertical Sizer
 	calcArea = new wxTextCtrl(this, CALCAREA, "", wxPoint(0, 0), wxSize(105, 45));
@@ -90,6 +91,7 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Calculator") {
 			btns[i][j]->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MainWindow::OnButtonClicked, this);
 		}
 	}
+	calcArea->Bind(wxEVT_KEY_DOWN, &MainWindow::calcAreaKeyEvents, this);
 	
 	calcArea->SetBackgroundColour(wxColour(41, 40, 41, 255));
 	calcArea->SetFont(wxFont(25, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
@@ -155,12 +157,7 @@ void MainWindow::OnButtonClicked(wxCommandEvent& evt) {
 		}
 		else {
 			for (int x = index + 1; x < equation.length(); x++) {
-				if (x == index + 1) {
-					equation[x] = '0';
-				}
-				else {
-					equation[x] = ' ';
-				}
+				equation[x] = ' ';
 			}
 			calcArea->SetValue(equation);
 		}
@@ -186,10 +183,49 @@ void MainWindow::OnButtonClicked(wxCommandEvent& evt) {
 			}
 		}
 	}
+	else if (evt.GetId() == 101) {
+		calcArea->SetValue(calcArea->GetValue() + "/");
+	}
+	else if (evt.GetId() == 102) {
+		calcArea->SetValue(calcArea->GetValue() + "x");
+	}
+	else if (evt.GetId() == 103) {
+		calcArea->SetValue(calcArea->GetValue() + "-");
+	}
+	else if (evt.GetId() == 104) {
+		calcArea->SetValue(calcArea->GetValue() + "+");
+	}
 	this->DeleteWhitespace();
 	evt.Skip();
 }
 void MainWindow::OnButtonEquals(wxCommandEvent& evt) {
+	double result = calculation->Calculate((std::string)calcArea->GetValue());
+	result = calculation->roundoff(result, 2);
+	std::string resultStr = std::to_string(result);
+	std::string toPrint = "";
+	bool found = false;
+	bool Print = false;
+	for (int i = 0; i < resultStr.length()-4; i++) {
+		toPrint += resultStr[i];
+		if (resultStr[i] == '.') {
+			found = true;
+		}
+		if (found) {
+			if (resultStr[i] >= '1' && resultStr[i] <= '9') {
+				Print = true;
+			}
+		}
+	}
+	if(Print)
+		calcArea->SetValue(toPrint);
+	else {
+		toPrint = "";
+		for (int i = 0; i < resultStr.length() - 7; i++) {
+			toPrint += resultStr[i];
+		}
+		calcArea->SetValue(toPrint);
+	}
+		
 	evt.Skip();
 }
 void MainWindow::DeleteWhitespace() {
@@ -202,4 +238,40 @@ void MainWindow::DeleteWhitespace() {
 		result += value[i];
 	}
 	calcArea->SetValue(result);
+}
+
+void MainWindow::calcAreaKeyEvents(wxKeyEvent& evt) {
+	if (evt.GetKeyCode() == WXK_RETURN) {
+		double result = calculation->Calculate((std::string)calcArea->GetValue());
+		result = calculation->roundoff(result, 2);
+		std::string resultStr = std::to_string(result);
+		std::string toPrint = "";
+		bool found = false;
+		bool Print = false;
+		for (int i = 0; i < resultStr.length() - 4; i++) {
+			toPrint += resultStr[i];
+			if (resultStr[i] == '.') {
+				found = true;
+			}
+			if (found) {
+				if (resultStr[i] >= '1' && resultStr[i] <= '9') {
+					Print = true;
+				}
+			}
+		}
+		if (Print)
+			calcArea->SetValue(toPrint);
+		else {
+			toPrint = "";
+			for (int i = 0; i < resultStr.length() - 7; i++) {
+				toPrint += resultStr[i];
+			}
+			calcArea->SetValue(toPrint);
+		}
+
+	}
+	else {
+		evt.Skip();
+	}
+	
 }

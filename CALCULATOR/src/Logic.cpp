@@ -13,14 +13,15 @@ double Logic::Calculate(std::string equation) {
 	for (int i = 0; i < equation.length(); i++) {
 		if (equation[i] == ')') {
 			int j;
-			for (j = i - 1; j > 0; j--) {
+			for (j = i - 1; j >= 0; j--) {
 				if (equation[j] == '(') {
 					break;
 				}
 			}
-			BracketSolver(equation, j + 1, i - 1);
+			bool removeBracket = BracketSolver(equation, j + 1, i - 1);
 			equation[j] = ' ';
-			equation[i] = ' ';
+			if (!removeBracket)
+				equation[i] = ' ';
 		}
 	}
 
@@ -30,12 +31,14 @@ double Logic::Calculate(std::string equation) {
 	Multiplication(equation, 0, equation.length());
 	double result = 0;
 	for (int i = 0; i < equation.length(); ) {
-
 		if (equation[i] >= '0' && equation[i] <= '9') {
 			result = ConsecNum(equation, i);
 			i++;
 			while ((equation[i] >= '0' && equation[i] <= '9') || equation[i] == ' ' || equation[i] == '.') {
 				i++;
+				if (i == equation.length()) {
+					break;
+				}
 			}
 
 		}
@@ -44,41 +47,105 @@ double Logic::Calculate(std::string equation) {
 			i++;
 			while ((equation[i] >= '0' && equation[i] <= '9') || equation[i] == ' ' || equation[i] == '.') {
 				i++;
+				if (i == equation.length()) {
+					break;
+				}
 			}
 		}
 		else if (equation[i] == '-') {
+			
 			result = result - ConsecNum(equation, i + 1);
 			i++;
 			while ((equation[i] >= '0' && equation[i] <= '9') || equation[i] == ' ' || equation[i] == '.') {
 				i++;
+				if (i == equation.length()) {
+					break;
+				}
 			}
+		}
+		else {
+			i++;
 		}
 	}
 	return result;
 }
-double Logic::BracketSolver(std::string& eq, int start, int end) {
-	int result = 0;
+bool Logic::BracketSolver(std::string& eq, int start, int end) {
+	double result = 0;
 
-	Division(eq, start, end);
+	bool removeBracket = Division(eq, start, end);
 	Multiplication(eq, start, end);
-	return result;
+	for (int i = start; i <= end; ) {
+		if (eq[i] >= '0' && eq[i] <= '9') {
+			result = ConsecNum(eq, i);
+			i++;
+			while ((eq[i] >= '0' && eq[i] <= '9') || eq[i] == ' ' || eq[i] == '.') {
+				i++;
+				if (i == end) {
+					i++;
+					break;
+				}
+			}
+
+		}
+		else if (eq[i] == '+') {
+			result = result + ConsecNum(eq, i + 1);
+			i++;
+			while ((eq[i] >= '0' && eq[i] <= '9') || eq[i] == ' ' || eq[i] == '.') {
+				i++;
+			}
+		}
+		else if (eq[i] == '-') {
+
+			result = result - ConsecNum(eq, i + 1);
+			i++;
+			while ((eq[i] >= '0' && eq[i] <= '9') || eq[i] == ' ' || eq[i] == '.') {
+				i++;
+			}
+		}
+		else {
+			i++;
+		}
+	}
+	result = roundoff(result, 2);
+	std::string resString = std::to_string(result);
+	std::string Res = "";
+	for (int x = 0; x < resString.length() - 4; x++) {
+		Res = Res + resString[x];
+	}
+	for (int i = start; i <= end; i++) {
+		int index = 0;
+		while (index <= Res.length()) {
+			eq[i] = Res[index];
+			index++;
+			i++;
+		}
+	
+		if (i <= end) {
+			eq[i] = ' ';
+		}
+	}
+	return removeBracket;
 }
 
 void Logic::Multiplication(std::string& eq, int start, int end) {
+	eq.resize(eq.length()+1, ' ');
 	for (int i = start; i <= end; i++) {
-		if (eq[i] == '*') {
+		if (eq[i] == '*' || eq[i] == 'x') {
 			double multiplier = ConsecNum(eq, i + 1);
 			int endpoint = 0;
 			for (int x = i + 1; x < eq.length(); x++) {
-				if ((eq[x] >= '0' && eq[x] <= '9') || eq[x] == ' ') {
+				if ((eq[x] >= '0' && eq[x] <= '9') || eq[x] == ' ' || eq[x] == '.') {
 					continue;
 				}
 				endpoint = x - 1;
 				break;
 			}
+			if (endpoint == 0) {
+				endpoint = end;
+			}
 			int j;
-			for (j = i - 1; j > 0; j--) {
-				if ((eq[j] >= '0' && eq[j] <= '9') || eq[j] == ' ') {
+			for (j = i - 1; j >= 0; j--) {
+				if ((eq[j] >= '0' && eq[j] <= '9') || eq[j] == ' ' || eq[j] == '.') {
 					continue;
 				}
 				break;
@@ -88,7 +155,6 @@ void Logic::Multiplication(std::string& eq, int start, int end) {
 			product = roundoff(product, 2);
 			std::string tempProduct = std::to_string(product);
 			std::string Product = "";
-			std::string strquotient = "";
 			for (int i = 0; i < tempProduct.length() - 4; i++) {
 				Product = Product + tempProduct[i];
 			}
@@ -101,13 +167,16 @@ void Logic::Multiplication(std::string& eq, int start, int end) {
 					index++;
 				}
 				found = false;
-				eq[x] = ' ';
+				if (x <= endpoint) {
+					eq[x] = ' ';
+				}
 			}
 		}
 	}
 }
 
-void Logic::Division(std::string& eq, int start, int end) {
+bool Logic::Division(std::string& eq, int start, int end) {
+	eq.resize(eq.length() + 1, ' ');
 	for (int i = start; i <= end; i++) {
 		if (eq[i] == '/') {
 			double divisor = ConsecNum(eq, i + 1);
@@ -119,13 +188,17 @@ void Logic::Division(std::string& eq, int start, int end) {
 				endpoint = x - 1;
 				break;
 			}
+			if (endpoint == 0) {
+				endpoint = end;
+			}
 			int j;
-			for (j = i - 1; j > 0; j--) {
+			for (j = i - 1; j >= 0; j--) {
 				if ((eq[j] >= '0' && eq[j] <= '9') || eq[j] == ' ' || eq[j] == '.') {
 					continue;
 				}
 				break;
 			}
+			
 			double dividend = ConsecNum(eq, j + 1);
 			double quotient = dividend / divisor;
 			quotient = roundoff(quotient, 2);
@@ -139,28 +212,39 @@ void Logic::Division(std::string& eq, int start, int end) {
 			for (int x = (j + 1); x <= endpoint; x++) {
 				int index = 0;
 				while (index < Quotient.length() && found) {
+					
 					eq[x] = Quotient[index];
+					if (x == end+1) {
+						return true;
+					}
 					x++;
 					index++;
+
 				}
 				found = false;
-				eq[x] = ' ';
+				if (x <= endpoint) {
+					eq[x] = ' ';
+				}
 			}
 		}
 	}
+	return false;
 }
 double Logic::ConsecNum(std::string eq, int n) {
 	double result = 0;
 	bool decimal = false;
+	double a = 10.0;
+	eq = eq;
 	for (int i = n; i < eq.length(); i++) {
 		if (eq[i] >= '0' && eq[i] <= '9' && !decimal) {
-			result = result * 10 + (eq[i] - 48);
+			result = result * 10 + (eq[i] - 48.0);
 		}
 		else if (eq[i] == '.') {
 			decimal  = true;
 		}
 		else if (eq[i] >= '0' && eq[i] <= '9' && decimal) {
-			result = result + ((eq[i] - 48) / 10);
+			result = result + ((eq[i] - 48) /a);
+			a = a * 10.0;
 		}
 		else if (eq[i] == ' ') {
 			continue;
