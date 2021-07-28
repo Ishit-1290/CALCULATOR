@@ -108,6 +108,7 @@ MainWindow::~MainWindow() {
 		delete[] btns[i];
 	}
 	delete[] btns;
+	delete calculation;
 }
 void MainWindow::OnButtonClicked(wxCommandEvent& evt) {
 	// Functionality of Numbers
@@ -268,7 +269,7 @@ void MainWindow::calcAreaKeyEvents(wxKeyEvent& evt) {
 			}
 			calcArea->SetValue(toPrint);
 		}
-
+		
 	}
 	else {
 		evt.Skip();
