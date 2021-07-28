@@ -114,7 +114,7 @@ MainWindow::~MainWindow() {
 void MainWindow::OnButtonClicked(wxCommandEvent& evt) {
 	// Functionality of Numbers
 	if (evt.GetId() >= 1000 && evt.GetId() <= 1009) {
-		calcArea->SetValue(calcArea->GetValue() + std::to_string(evt.GetId() - 1000));
+		calcArea->AppendText(std::to_string(evt.GetId() - 1000));
 		evt.Skip();
 		return;
 	} 
@@ -186,16 +186,16 @@ void MainWindow::OnButtonClicked(wxCommandEvent& evt) {
 		}
 	}
 	else if (evt.GetId() == 101) {
-		calcArea->SetValue(calcArea->GetValue() + "/");
+		calcArea->AppendText("/");
 	}
 	else if (evt.GetId() == 102) {
-		calcArea->SetValue(calcArea->GetValue() + "x");
+		calcArea->AppendText("x");
 	}
 	else if (evt.GetId() == 103) {
-		calcArea->SetValue(calcArea->GetValue() + "-");
+		calcArea->AppendText("-");
 	}
 	else if (evt.GetId() == 104) {
-		calcArea->SetValue(calcArea->GetValue() + "+");
+		calcArea->AppendText("+");
 	}
 	this->DeleteWhitespace();
 	evt.Skip();
@@ -218,16 +218,14 @@ void MainWindow::OnButtonEquals(wxCommandEvent& evt) {
 			}
 		}
 	}
-	if(Print)
-		calcArea->SetValue(toPrint);
-	else {
+	if (!Print) {
 		toPrint = "";
 		for (int i = 0; i < resultStr.length() - 7; i++) {
 			toPrint += resultStr[i];
 		}
-		calcArea->SetValue(toPrint);
 	}
-		
+	calcArea->SetValue("");
+	calcArea->AppendText(toPrint);
 	evt.Skip();
 }
 void MainWindow::DeleteWhitespace() {
@@ -261,15 +259,14 @@ void MainWindow::OnKeyDown(wxKeyEvent& evt) {
 				}
 			}
 		}
-		if (Print)
-			calcArea->SetValue(toPrint);
-		else {
+		if (!Print) {
 			toPrint = "";
 			for (int i = 0; i < resultStr.length() - 7; i++) {
 				toPrint += resultStr[i];
 			}
-			calcArea->SetValue(toPrint);
 		}
+		calcArea->SetValue("");
+		calcArea->AppendText(toPrint);
 
 	}
 	else if ((evt.GetUnicodeKey() >= '0' && evt.GetUnicodeKey() <= '9') || evt.GetUnicodeKey() == '*' || evt.GetUnicodeKey() == '-' || evt.GetUnicodeKey() == '/' || evt.GetUnicodeKey() == ' ' || evt.GetKeyCode() == WXK_BACK ||
@@ -279,8 +276,8 @@ void MainWindow::OnKeyDown(wxKeyEvent& evt) {
 		evt.Skip();
 	}
 	else if (evt.GetUnicodeKey() == '=') {
-		calcArea->SetValue(calcArea->GetValue() + "+");
-		
+		calcArea->AppendText("+");
+				
 	}
 	else {
 
