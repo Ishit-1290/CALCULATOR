@@ -24,6 +24,7 @@ private:
 	void OnButtonClicked(wxCommandEvent& evt);
 	void OnButtonEquals(wxCommandEvent& evt);
 	void DeleteWhitespace();
-	void calcAreaKeyEvents(wxKeyEvent& evt);
+	
+	void OnKeyDown(wxKeyEvent& evt);
 };
 

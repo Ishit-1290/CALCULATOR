@@ -91,7 +91,8 @@ MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Calculator") {
 			btns[i][j]->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MainWindow::OnButtonClicked, this);
 		}
 	}
-	calcArea->Bind(wxEVT_KEY_DOWN, &MainWindow::calcAreaKeyEvents, this);
+	calcArea->Bind(wxEVT_KEY_DOWN, &MainWindow::OnKeyDown, this);
+	
 	
 	calcArea->SetBackgroundColour(wxColour(41, 40, 41, 255));
 	calcArea->SetFont(wxFont(25, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
@@ -241,7 +242,7 @@ void MainWindow::DeleteWhitespace() {
 	calcArea->SetValue(result);
 }
 
-void MainWindow::calcAreaKeyEvents(wxKeyEvent& evt) {
+void MainWindow::OnKeyDown(wxKeyEvent& evt) {
 	if (evt.GetKeyCode() == WXK_RETURN) {
 		double result = calculation->Calculate((std::string)calcArea->GetValue());
 		result = calculation->roundoff(result, 2);
@@ -269,10 +270,19 @@ void MainWindow::calcAreaKeyEvents(wxKeyEvent& evt) {
 			}
 			calcArea->SetValue(toPrint);
 		}
+
+	}
+	else if ((evt.GetUnicodeKey() >= '0' && evt.GetUnicodeKey() <= '9') || evt.GetUnicodeKey() == '*' || evt.GetUnicodeKey() == '-' || evt.GetUnicodeKey() == '/' || evt.GetUnicodeKey() == ' ' || evt.GetKeyCode() == WXK_BACK ||
+		evt.IsKeyInCategory(WXK_CATEGORY_ARROW | WXK_CATEGORY_JUMP)) {
+		
+		
+		evt.Skip();
+	}
+	else if (evt.GetUnicodeKey() == '=') {
+		calcArea->SetValue(calcArea->GetValue() + "+");
 		
 	}
 	else {
-		evt.Skip();
+
 	}
-	
 }
