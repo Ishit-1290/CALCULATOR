@@ -23,6 +23,7 @@ double Logic::Calculate(std::string equation) {
 	}
 	for (int i = 0; i < equation.length(); i++) {
 		if (equation[i] == '(' || equation[i] == ')') {
+			
 			equation[i] = ' ';
 		}
 	}
@@ -40,7 +41,6 @@ double Logic::Calculate(std::string equation) {
 					break;
 				}
 			}
-
 		}
 		else if (equation[i] == '+') {
 			result = result + ConsecNum(equation, i + 1);
@@ -53,7 +53,6 @@ double Logic::Calculate(std::string equation) {
 			}
 		}
 		else if (equation[i] == '-') {
-			
 			result = result - ConsecNum(equation, i + 1);
 			i++;
 			while ((equation[i] >= '0' && equation[i] <= '9') || equation[i] == ' ' || equation[i] == '.') {
@@ -69,10 +68,11 @@ double Logic::Calculate(std::string equation) {
 	}
 	return result;
 }
+
 void Logic::BracketSolver(std::string& eq, int start, int end) {
-	double result = 0;
-	bool Found = false;
-    
+	float result = 0;  
+	bool Found = false;  
+
 	Division(eq, start, end);
 	Multiplication(eq, start, end);
 	for (int i = start; i <= end; ) {
@@ -214,6 +214,10 @@ void Logic::Division(std::string& eq, int start, int end) {
 			if (Dividend == 0) {
 				startMultiplyIndex = 0;
 				Dividend = ConsecNum(eq, 0);
+			}
+			if (divisor == 0) {
+				eq = "inf";
+				return;
 			}
 			double product = Dividend / divisor;
 			string Product = to_string(product);
